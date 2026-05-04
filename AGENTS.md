@@ -1,3 +1,8 @@
+# AGENTS.md
+
+Este archivo define el comportamiento de los agentes AI en el proyecto "Noa Propiedades".
+
+## Agente: Next.js AI
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 
