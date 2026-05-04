@@ -27,7 +27,7 @@ export default function SearchFilter() {
             </label>
             <select
                 id="ubicacion"
-                className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                className="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none text-gray-800"
                 onChange={handleFilter}
                 defaultValue={searchParams.get('ubicacion') || ''}
             >
