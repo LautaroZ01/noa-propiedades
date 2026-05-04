@@ -1,15 +1,29 @@
 // app/page.tsx
 import { createClient } from '@/utils/supabase/server';
+import Link from 'next/link';
+import SearchFilter from './components/SearchFilter'; // Importamos el nuevo componente
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  // En versiones recientes de Next.js, searchParams es una Promesa
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
+  const { ubicacion } = await searchParams;
   const supabase = await createClient();
 
-  const { data: properties, error } = await supabase
+  // 1. Iniciamos la consulta base
+  let query = supabase
     .from('properties')
-    .select(`
-      *,
-      agents ( name )
-    `);
+    .select(`*, agents ( name )`);
+
+  // 2. Si hay un filtro en la URL, le agregamos la condición a Supabase
+  if (ubicacion) {
+    query = query.ilike('location', `%${ubicacion}%`); // ilike ignora mayúsculas/minúsculas
+  }
+
+  // 3. Ejecutamos la consulta
+  const { data: properties, error } = await query;
 
   if (error) {
     return (
@@ -19,14 +33,6 @@ export default async function Home() {
     );
   }
 
-  if (!properties) return (
-    <div className="flex justify-center items-center h-screen">
-      <p className="text-red-500 font-bold">Error al cargar datos</p>
-    </div>
-  )
-
-  console.log(properties)
-
   return (
     <main className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
@@ -35,15 +41,17 @@ export default async function Home() {
           <p className="text-gray-600 mt-2 text-lg">Las mejores oportunidades en Salta y Jujuy</p>
         </header>
 
+        {/* Insertamos el componente de cliente aquí */}
+        <SearchFilter />
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {properties.map((property) => (
+          {properties?.map((property) => (
             <article
               key={property.id}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300"
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col"
             >
               <div className="h-56 overflow-hidden bg-gray-200">
                 {property.image_url ? (
-                  /* Usamos la etiqueta img nativa temporalmente */
                   <img
                     src={property.image_url}
                     alt={property.title}
@@ -54,7 +62,7 @@ export default async function Home() {
                 )}
               </div>
 
-              <div className="p-6">
+              <div className="p-6 grow">
                 <div className="uppercase tracking-wider text-xs text-blue-600 font-bold mb-2">
                   {property.type} • {property.location}
                 </div>
@@ -82,8 +90,24 @@ export default async function Home() {
                   </div>
                 </div>
               </div>
+
+              <div className="p-4 border-t border-gray-100 bg-gray-50">
+                <Link
+                  href={`/propiedades/${property.id}`}
+                  className="block w-full text-center bg-blue-100 text-blue-700 font-semibold py-2.5 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+                >
+                  Ver Detalles
+                </Link>
+              </div>
             </article>
           ))}
+
+          {/* Mensaje si no hay resultados */}
+          {properties?.length === 0 && (
+            <div className="col-span-full text-center py-12 text-gray-500">
+              No se encontraron propiedades en esta ubicación.
+            </div>
+          )}
         </div>
       </div>
     </main>
