@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NOA Propiedades - PropTech MVP
 
-## Getting Started
+Plataforma moderna de gestión y comercialización inmobiliaria enfocada en el mercado del norte argentino (Salta y Jujuy). Desarrollada como Producto Mínimo Viable (MVP) para demostrar la implementación de arquitecturas web modernas aplicadas al sector PropTech.
 
-First, run the development server:
+## Tecnologías Utilizadas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Este proyecto fue construido utilizando herramientas de vanguardia para asegurar alto rendimiento, excelente SEO y una experiencia de usuario fluida:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+*   **Framework:** [Next.js 16.2](https://nextjs.org/) (App Router)
+*   **Lenguaje:** TypeScript
+*   **Base de Datos y Autenticación:** [Supabase](https://supabase.com/) (PostgreSQL)
+*   **Estilos:** Tailwind CSS
+*   **Gestor de Paquetes:** pnpm
+*   **Despliegue:** Vercel
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Características Principales
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   **Renderizado Híbrido (RSC & SSR):** Utilización de React Server Components para optimizar el envío de JavaScript al cliente y Server-Side Rendering para un SEO impecable del catálogo de propiedades.
+*   **Búsqueda Dinámica por URL:** Filtro de propiedades utilizando `useSearchParams`, permitiendo compartir enlaces exactos con filtros pre-aplicados sin depender de estados locales (`useState`).
+*   **Rutas Dinámicas:** Vistas detalladas para cada propiedad (`/propiedades/[id]`) generadas desde el servidor.
+*   **Autenticación Segura:** Sistema de login implementado con `@supabase/ssr` y protegido mediante **Middleware** nativo de Next.js.
+*   **Mutación de Datos sin APIs:** Creación de nuevas propiedades desde el panel de control utilizando **Server Actions**, eliminando la necesidad de crear endpoints intermedios y recargando la caché automáticamente con `revalidatePath`.
+*   **Seguridad de Datos:** Políticas de seguridad a nivel de fila (Row Level Security - RLS) configuradas en PostgreSQL.
 
-## Learn More
+## Instalación y Configuración Local
 
-To learn more about Next.js, take a look at the following resources:
+Si deseas correr este proyecto en tu entorno local, sigue estos pasos:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/tu-usuario/noa-propiedades.git](https://github.com/tu-usuario/noa-propiedades.git)
+   cd noa-propiedades
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Instalar dependencias:**
+   ```bash
+   pnpm install
+   ```
 
-## Deploy on Vercel
+3. **Configurar Variables de Entorno:**
+   Crea un archivo `.env.local` en la raíz del proyecto y agrega tus credenciales de Supabase:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=tu_supabase_url
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu_publishable_key
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Ejecutar el servidor de desarrollo:**
+   ```bash
+   pnpm dev
+   ```
+   Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la aplicación.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Esquema de Base de Datos
+
+El proyecto utiliza dos tablas principales en PostgreSQL con relaciones directas:
+
+*   `agents`: Almacena la información de los corredores inmobiliarios.
+*   `properties`: Almacena el catálogo de inmuebles, vinculados a un agente mediante una clave foránea (`agent_id`).
+
+## Autor
+
+**Lautaro Zuleta** -
+Desarrollador Full Stack
